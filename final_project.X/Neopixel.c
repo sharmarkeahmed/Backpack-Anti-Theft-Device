@@ -1,7 +1,7 @@
 /*
  * File:   ahme0344_lab2b_main_v001.c
  * Author: Sharmarke Ahmed
- *
+ * The Neopixel library contains an assortment of functions useful for controlling the neopixel, a LED that can change color via serial communication.
  * Created on September 28, 2023, 9:46 PM
  */
 
