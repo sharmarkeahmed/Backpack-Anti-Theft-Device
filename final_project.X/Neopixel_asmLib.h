@@ -22,4 +22,3 @@ void wait_1ms(void);
 #endif
 
 #endif	/* NEOPIXEL_ASMLIB_H */
-

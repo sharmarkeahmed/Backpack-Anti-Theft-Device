@@ -1,7 +1,10 @@
 /*
- * File:   ahme0344_lab2b_main_v001.c
+ * File:   Neopixel.c
  * Author: Sharmarke Ahmed
- * The Neopixel library contains an assortment of functions useful for controlling the neopixel, a LED that can change color via serial communication.
+ * The Neopixel library contains an assortment of functions useful for 
+ * controlling the neopixel, a LED that can change color via serial 
+ * communication, on the PIC24FJ64GA002. The Neopixel library uses Timer1 module
+ * on the microcontroller. Ensure this module is not being used by other devices.
  * Created on September 28, 2023, 9:46 PM
  */
 
@@ -26,7 +29,7 @@ void writePacCol(uint32_t PackedColor);
 void blinkGreen();
 void blinkRed();
 
-volatile int overflow = 0; // count number of times TMR1 overflows
+volatile int overflowTMR1 = 0; // count number of times TMR1 overflows
 
 // blinkGreen or blinkRed modes
 volatile int modeGreen = 0;
@@ -46,7 +49,7 @@ void initNeopixel() {
  * be used with the blinkGreen() and blinkRed() functions
  */
 void initTimer1() {
-    overflow = 0;
+    overflowTMR1 = 0;
     T1CONbits.TCKPS = 0b10; // 1:64 prescale
     PR1 = 49999; // 0.2 second period
     // (0.2 seconds) * (16 * 10 ^6)/64 cycles/sec -1 = 49999
@@ -207,12 +210,12 @@ void blinkRed() {
 }
 
 void __attribute__((__interrupt__, __auto_psv__)) _T1Interrupt() {
-    overflow++;
-    if(overflow >= 7) { // Stop blinking & turn off TMR1
+    overflowTMR1++;
+    if(overflowTMR1 >= 7) { // Stop blinking & turn off TMR1
         writeColor(0, 0, 0);
         T1CONbits.TON = 0; // Turn off TMR1
     }
-    else if(overflow % 2) { // overflow is odd, turn off neopixel
+    else if(overflowTMR1 % 2) { // overflow is odd, turn off neopixel
         writeColor(0, 0, 0);
     }
     else { // overflow is even, turn on neopixel again
