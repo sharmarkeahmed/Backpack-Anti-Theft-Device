@@ -9,8 +9,8 @@
  * debouncing software is provided by the code, it is recommended that a RC
  * low filter circuit is used in connecting to pin RP15 to minimize the effect
  * of noise on button pressed and avoid button presses being registered twice.
- * The library uses the input capture 1 register and Timer2. Ensure these
- * modules are not being used by other devices in the PIC24FJ64GA002.
+ * The library uses the input capture 1 register and Timer2. Ensure these 
+ * modules are not being used elsewhere.
  * 
  * Created on November 22, 2023, 8:45 PM
  */

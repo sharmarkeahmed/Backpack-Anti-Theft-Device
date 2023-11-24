@@ -10,7 +10,7 @@
  * low filter circuit is used in connecting to pin RP15 to minimize the effect
  * of noise on button pressed and avoid button presses being registered twice.
  * The library uses the input capture 1 register and Timer2. Ensure these
- * modules are not being used by other devices in the PIC24FJ64GA002.
+ * modules are not being used elsewhere.
  * Created on November 22, 2023, 7:18 PM
  */
 
