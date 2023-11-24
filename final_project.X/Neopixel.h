@@ -1,10 +1,11 @@
 /*
- * File:   Neopixel.h
+ * File:   Neopixel.c
  * Author: Sharmarke Ahmed
  * The Neopixel library contains an assortment of functions useful for 
  * controlling the neopixel, a LED that can change color via serial 
- * communication, on the PIC24FJ64GA002. The Neopixel library uses Timer1 module
- * on the microcontroller. Ensure these modules are not being used elsewhere.
+ * communication, on the PIC24FJ64GA002. Connect the neopixel to pin RB13. 
+ * The Neopixel library uses Timer1 module on the microcontroller. Ensure this 
+ * module is not being used elsewhere.
  * 
  * Created on November 22, 2023, 11:26 AM
  */

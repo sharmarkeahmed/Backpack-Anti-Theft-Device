@@ -3,8 +3,10 @@
  * Author: Sharmarke Ahmed
  * The Neopixel library contains an assortment of functions useful for 
  * controlling the neopixel, a LED that can change color via serial 
- * communication, on the PIC24FJ64GA002. The Neopixel library uses Timer1 module
- * on the microcontroller. Ensure this module is not being used elsewhere.
+ * communication, on the PIC24FJ64GA002. Connect the neopixel to pin RB13. 
+ * The Neopixel library uses Timer1 module on the microcontroller. Ensure this 
+ * module is not being used elsewhere.
+ * 
  * Created on September 28, 2023, 9:46 PM
  */
 
@@ -36,12 +38,13 @@ volatile int modeGreen = 0;
 volatile int modeRed = 0;
 
 /**
- * Initializes pin RB6 to be used with the Neopixel on PIC24
+ * Initializes pin RB13 to be used with the Neopixel on PIC24
  */
 void initNeopixel() {
     CLKDIVbits.RCDIV = 0;  //Set RCDIV=1:1 (default 2:1) 32MHz or FCY/2=16M
-    TRISBbits.TRISB6 = 0; // Set pin RB6 to output
-    LATBbits.LATB6 = 0; // set pin RB6 low
+    AD1PCFGbits.PCFG11 = 1; // Set pin RB13 (AN11) to digital mode
+    TRISBbits.TRISB13 = 0; // Set pin RB6 to output
+    LATBbits.LATB13 = 0; // set pin RB6 low
 }
 
 /**

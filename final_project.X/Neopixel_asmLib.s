@@ -13,14 +13,14 @@
 
 _write_0: ; TOTAL : 6 highs, 14 lows
     
-    BSET LATB, #6
+    BSET LATB, #13
     repeat #3
     nop
 
     ; 14 LOW (Note, 3 low during return, 2 low during next function call)
     
     ; --- 9 cycles ---
-    BCLR LATB, #6 ; 1 cycle for clr
+    BCLR LATB, #13 ; 1 cycle for clr
     repeat #6
     nop
     ; ----------------
@@ -30,14 +30,14 @@ _write_0: ; TOTAL : 6 highs, 14 lows
 _write_1: ; TOTAL: 11 HIGH, 9 LOW
     
     ; 11 HIGH
-    BSET LATB, #6
+    BSET LATB, #13
     repeat #8
     nop
     
     ; 9 LOW ( Note, 3 low during return, 2 low during next function call)
     
     ; -- 4 cycles ---
-    BCLR LATB, #6
+    BCLR LATB, #13
     repeat #1
     nop
     
@@ -56,5 +56,4 @@ _wait_1ms:
     
     
     
-
 
