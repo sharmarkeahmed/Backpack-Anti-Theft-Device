@@ -9,8 +9,16 @@
 #include "xc.h"
 #include "stdint.h"
 
+#define STATUS_REG_AUX 0x07
+#define OUT_ADC1_L 0x08
+#define OUT_ADC1_H 0x09
+#define OUT_ADC2_L 0x0A
+#define OUT_ADC2_H 0x0B
+#define OUT_ADC3_L 0x0C
+#define OUT_ADC3_H 0x0D
+#define INT_COUNTER_REG 0x0E
 #define WHO_AM_I 0x0F
-#define CTRL_REG0 0x1E
+#define TEMP_CFG_REG 0x1F
 #define CTRL_REG1 0x20
 #define CTRL_REG2 0x21
 #define CTRL_REG3 0x22
@@ -27,6 +35,8 @@
 #define OUT_Z_H 0x2D
 #define FIFO_CTRL_REG 0x2E
 #define FIFO_SRC_REG 0x2F
+#define INT1_THS 0x32
+#define INT1_CFG 0x38
 
 // Function declarations
 void initAccelerometer();
