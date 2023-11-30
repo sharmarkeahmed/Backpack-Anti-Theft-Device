@@ -8,6 +8,7 @@
 
 #include "xc.h"
 #include "Accelerometer.h"
+#include "PushButton.h"
 #include "stdint.h"
 #include "Alarm.h"
 #include "Neopixel.h"
@@ -31,10 +32,18 @@
 volatile int x_accel;
 volatile int y_accel;
 volatile int z_accel;
-volatile int alarmNotOn = 0;
+volatile int alarmOn = 0;
 
+#define STATUS_REG_AUX 0x07
+#define OUT_ADC1_L 0x08
+#define OUT_ADC1_H 0x09
+#define OUT_ADC2_L 0x0A
+#define OUT_ADC2_H 0x0B
+#define OUT_ADC3_L 0x0C
+#define OUT_ADC3_H 0x0D
+#define INT_COUNTER_REG 0x0E
 #define WHO_AM_I 0x0F
-#define CTRL_REG0 0x1E
+#define TEMP_CFG_REG 0x1F
 #define CTRL_REG1 0x20
 #define CTRL_REG2 0x21
 #define CTRL_REG3 0x22
@@ -49,6 +58,8 @@ volatile int alarmNotOn = 0;
 #define OUT_Y_H 0x2B
 #define OUT_Z_L 0x2C
 #define OUT_Z_H 0x2D
+#define FIFO_CTRL_REG 0x2E
+#define FIFO_SRC_REG 0x2F
 #define INT1_THS 0x32
 #define INT1_CFG 0x38
 
@@ -61,6 +72,7 @@ int main(void) {
     initAlarm();
     initNeopixel();
     initAccelerometer();
+    initPushButton();
     delay_ms(100);
     accel_write(CTRL_REG5, 0b10000000); // reboot memory content
     delay_ms(100);
@@ -71,7 +83,7 @@ int main(void) {
     if(accel_read(WHO_AM_I) != 0x33) {
         return 1; // Something is wrong!
     }
-//    accel_write(CTRL_REG0, 0b0010000); // p. 34, default values
+
 //    accel_write(CTRL_REG1, 0b01110111); // 400Hz, Normal, ZYX axis enabled
 //    accel_write(CTRL_REG4, 0b10111000); // block data not updated until MSB
 //    accel_write(CTRL_REG5, 0b01000000); // FIFO enable
@@ -85,7 +97,6 @@ int main(void) {
     // and LSB reating, 16g scale selection, high resolution output mode
     
 //    // Verify correct register values
-//    volatile int reg0setting = accel_read(CTRL_REG0); // 0b0010000
 //    volatile int reg1setting = accel_read(CTRL_REG1); // 0b01110111
 //    volatile int reg2setting = accel_read(CTRL_REG2); // default
 //    volatile int reg3setting = accel_read(CTRL_REG3); // default
@@ -97,14 +108,21 @@ int main(void) {
 
 void loop() {
     while(1) {
-            x_accel = getXAcceleration();
-            y_accel = getYAcceleration();
-            z_accel = getZAcceleration();
-            if(z_accel > 30000 && !alarmNotOn) {
-                turnOnAlarm();
-                blinkRed();
-                alarmNotOn = 1;
+        if(isButtonPressed()) {
+            blinkGreen();
+            while(!isButtonPressed()) {
+                x_accel = getXAcceleration();
+                y_accel = getYAcceleration();
+                z_accel = getZAcceleration();
+                if(z_accel > 30000 && !alarmOn) {
+                    turnOnAlarm();
+                    alarmOn = 1;
+                }
             }
+            turnOffAlarm();
+            alarmOn = 0;
+            blinkRed();
+        }
     }
 }
 
