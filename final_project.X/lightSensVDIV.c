@@ -1,4 +1,4 @@
-#include "xc.h"
+    #include "xc.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "stdint.h"
@@ -23,7 +23,7 @@
 #define NUMSAMPLES 128
 volatile int adc_buffer[BUFSIZE];
 volatile int buffer_index = 0;
-volatile int adcval = 0;
+volatile float adcval = 0;
 
 void delay_ms(unsigned long int x){
     while(x-- > 0){
@@ -86,12 +86,21 @@ void __attribute__((interrupt,auto_psv))_ADC1Interrupt(){ //everytime buffer is 
     putVal(ADC1BUF0);
 }
 
+int isBackPackOpen(){
+    adcval = ((float) 3.3 /1024)*getAvg(); //dark = 3.29, partially open = 1.743 w/ 3.3 V source
+    if(adcval == -1){ //buffer is not full in progress
+    if(adcval <= 2.5){ //open backpack
+        return 1;
+    }
+        return 0;
+        }
 int main(){
     adc_init();
     initBuffer();
     
     while(1){
-    adcval = ((float) 3.3 /1024)*getAvg(); 
+        isBackPackOpen();
+    }
     int y = 1;
     }
    
