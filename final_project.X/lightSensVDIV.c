@@ -74,12 +74,14 @@ void putVal(int ADCvalue){ //Fills buffer with ADC values, the ADC value is the 
 int getAvg(){ // averages the values in the buffer, no arguments, no return values
     unsigned long int sum = 0;
     int average;
+    
     for(int i=0; i<BUFSIZE; i++){
         sum = sum + adc_buffer[i];
     }
     average = sum/BUFSIZE;
     return average;
-}
+    }
+
 
 void __attribute__((interrupt,auto_psv))_ADC1Interrupt(){ //everytime buffer is full it puts the value in the buffer
     _AD1IF = 0;
@@ -88,22 +90,26 @@ void __attribute__((interrupt,auto_psv))_ADC1Interrupt(){ //everytime buffer is 
 
 int isBackPackOpen(){
     adcval = ((float) 3.3 /1024)*getAvg(); //dark = 3.29, partially open = 1.743 w/ 3.3 V source
-    if(adcval == -1){ //buffer is not full in progress
-    if(adcval <= 2.5){ //open backpack
+    if(adc_buffer[9] == 0){ //buffer is not full in progress
+        return -1;
+    }
+    else if(adcval <= 2.5){ //open backpack
         return 1;
     }
         return 0;
         }
 int main(){
+    int open;
     adc_init();
     initBuffer();
     
     while(1){
-        isBackPackOpen();
+        open = isBackPackOpen();
+        if(open == 1){
+            //turnOnAlarm();  
+        }
+       // delay_ms(20);
+        int y = 1;
     }
-    int y = 1;
+    
     }
-   
-    
-    
-}
