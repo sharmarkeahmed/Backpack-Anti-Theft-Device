@@ -45,8 +45,7 @@ void accel_write(uint8_t address, uint8_t data);
 int getXAcceleration();
 int getYAcceleration();
 int getZAcceleration();
-int XYZSTATUS();
-int isFIFOEMPTY();
+int movementDetected();
 
 void initAccelerometer() {
     CLKDIVbits.RCDIV = 0; // 16MHz instruction clock
@@ -62,8 +61,18 @@ void initAccelerometer() {
     I2C1BRG = 157; // Fscl = 100KHz
     I2C1CONbits.I2CEN = 1; // Turn on I2C
     
-//    // Send commands to initialize the LIS3DH. Refer to P.13 of manual
-//    accel_write()
+    // Send commands to initialize the LIS3DH. Refer to P.13 of manual
+    delay_ms(100);
+    accel_write(CTRL_REG5, 0b10000000); // reboot memory content
+    delay_ms(100);
+    accel_write(CTRL_REG5, 0x00);
+    delay_ms(100);
+    accel_write(CTRL_REG1, 0x77);
+    accel_write(CTRL_REG2, 0x01);
+    accel_write(CTRL_REG3, 0x40);
+    accel_write(CTRL_REG4, 0x84);
+    accel_write(INT1_THS, 0x20);
+    accel_write(INT1_CFG, 0x2A);
 }
 
 int accel_read(uint8_t address) {
@@ -132,19 +141,12 @@ int getZAcceleration() {
     return z;
 }
 
-int XYZSTATUS() {
-    int status_reg_aux_data = accel_read(STATUS_REG);
-    if( ( ( status_reg_aux_data & 0b00000100 ) >> 3 ) == 1 ) {
-        if( (  ( status_reg_aux_data & 0b10000000) >> 7 ) == 1 ) { 
-            return 1;
-        }
+/**
+ * @return 1 if the accelerometer detected movement, otherwise return 0
+ */
+int movementDetected() {
+    if(getZAcceleration() > 30000) {
+        return 1;
     }
     return 0;
-}
-
-int isFIFOEMPTY() {
-    int fiforeg = accel_read(FIFO_SRC_REG);
-    fiforeg = fiforeg &= 0b00100000;
-    fiforeg = fiforeg >> 5;
-    return fiforeg;
 }

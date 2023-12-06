@@ -19,8 +19,7 @@ void accel_write(uint8_t address, uint8_t data);
 int getXAcceleration();
 int getYAcceleration();
 int getZAcceleration();
-int XYZSTATUS();
-int isFIFOEMPTY();
+int movementDetected();
 
 #ifdef	__cplusplus
 }
