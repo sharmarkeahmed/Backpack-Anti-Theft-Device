@@ -21,6 +21,10 @@
 
 #define BUFSIZE 10
 #define NUMSAMPLES 128
+#define BATTERYVOLT 3
+#define COMPVOLT 3.3
+#define COMPTHRESHOLD 2.5
+#define BATTERYTHRESHOLD 
 volatile int adc_buffer[BUFSIZE];
 volatile int buffer_index = 0;
 volatile float adcval = 0;
@@ -88,8 +92,8 @@ void __attribute__((interrupt,auto_psv))_ADC1Interrupt(){ //everytime buffer is 
     putVal(ADC1BUF0);
 }
 
-int isBackPackOpen(){
-    adcval = ((float) 3.3 /1024)*getAvg(); //dark = 3.29, partially open = 1.743 w/ 3.3 V source
+int lightDetected(){
+    adcval = ((float) 3.0 /1024)*getAvg(); //dark = 3.29, partially open = 1.743 w/ 3.3 V source || dark = 2.997, partially open = 1.863 w/ 3.0 V source
     if(adc_buffer[9] == 0){ //buffer is not full in progress
         return -1;
     }
@@ -104,7 +108,7 @@ int main(){
     initBuffer();
     
     while(1){
-        open = isBackPackOpen();
+        open = lightDetected();
         if(open == 1){
             //turnOnAlarm();  
         }
