@@ -1,3 +1,15 @@
+/*
+ * File:   LightSensor.c
+ * Author: Ryan Fowler
+ * The Light Sensor library uses a light sensor that changes its resistance
+ * based on how much light it detects. It is used in a voltage divider with
+ * a 4.7 k ohm resistor and the voltage is read using a peripheral pin on the
+ * microcontroller. This value is analog so an analog to digital converter
+ * converts it into a voltage. Compatible with 3.0 V and 3.3 V sources
+ *
+ * Created on December 1, 2023, 11:35 AM
+ */
+
 #include "xc.h"
 #include "stdint.h"
 
@@ -19,12 +31,21 @@ int getAvg();
 void __attribute__((__interrupt__, __auto_psv__)) _ADC1Interrupt();
 int lightDetected();
 
+/**
+ * Assembly function that uses "nop" to delay for the specified
+ * number of miliseconds.
+ */
 void delay_ms(unsigned long int ms){
     while (ms-- > 0) {
         asm("repeat #15998");
         asm("nop");
     }
 }
+
+/**
+ * Initializes light sensor pin as well as setting up AD conversion
+ * 
+ */
 
 void initLightSensor(){ // initializes ADC and assigns it to timer 3, no arguments, no return values
     _RCDIV = 0;
@@ -52,11 +73,20 @@ void initLightSensor(){ // initializes ADC and assigns it to timer 3, no argumen
     T3CONbits.TON = 1;
 }
 
+/**
+ * creates Buffer array to store ADC buffer values
+ */
+
 void initBuffer(){ //initializes buffer to size of 10, no arguments, no return values
     for(int i=0; i<BUFSIZE; i++){
         adc_buffer[i] = 0;
     }
 }
+
+/**
+ * Takes the value from the buffer and puts it in the array.
+ * 
+ */
 
 void putVal(int ADCvalue){ //Fills buffer with ADC values, the ADC value is the argument, no return values
     adc_buffer[buffer_index++] = ADCvalue;
@@ -64,6 +94,11 @@ void putVal(int ADCvalue){ //Fills buffer with ADC values, the ADC value is the 
         buffer_index = 0;
     }
 }
+
+/**
+ * averages the values of the array.
+ * 
+ */
 
 int getAvg(){ // averages the values in the buffer, no arguments, no return values
     unsigned long int sum = 0;
@@ -76,11 +111,19 @@ int getAvg(){ // averages the values in the buffer, no arguments, no return valu
     return average;
     }
 
-
+/**
+ * waits until buffer is full and puts value in array.
+ * 
+ */
 void __attribute__((__interrupt__, __auto_psv__)) _ADC1Interrupt(){ //everytime buffer is full it puts the value in the buffer
     _AD1IF = 0;
     putVal(ADC1BUF0);
 }
+
+/**
+ * checks if light detected is above the voltage threshold needed to set off alarm (2.5 V)
+ * 
+ */
 
 int lightDetected(){
     adcval = ((float) 3.0 /1024)*getAvg(); //dark = 3.29, partially open = 1.743 w/ 3.3 V source || dark = 2.997, partially open = 1.863 w/ 3.0 V source
