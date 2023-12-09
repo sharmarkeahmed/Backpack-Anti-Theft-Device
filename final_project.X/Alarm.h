@@ -26,7 +26,7 @@ extern "C" {
  * Initializes pin RP14 as output for the piezoelectric buzzer, as well as 
  * the output compare register and Timer2 used to send pulses to the buzzer.
  */
-void initAlarm();
+void initAlarm(double freq);
 
 /**
  * Turns on the alarm
