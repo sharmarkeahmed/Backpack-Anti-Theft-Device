@@ -13,17 +13,23 @@
 
 
 #include "xc.h"
+#include "math.h"
+
 
 // Function declarations
-void initAlarm();
+void initAlarm(double freq);
 void turnOnAlarm();
 void turnOffAlarm();
 
 /**
  * Initializes pin RP14 as output for the piezoelectric buzzer, as well as 
  * the output compare register and Timer2 used to send pulses to the buzzer.
+ * 
+ * @param freq the minimum frequency allowed is 0.4768444343 Hz, anything lower
+ * than this will overflow the period.
+ * The frequency at which that alarm beeps can be altered by the user
  */
-void initAlarm() {
+void initAlarm(double freq) {
     CLKDIVbits.RCDIV = 0; // 16 MHz clock
     AD1PCFGbits.PCFG10 = 1; // Configure pin RP14 (AN10) as digital
     TRISBbits.TRISB14 = 0; // Configure pin RP14 as output
@@ -33,7 +39,12 @@ void initAlarm() {
     T2CON = 0; // ensure TMR2 is reset
     TMR2 = 0; // ensure TMR2 starts at zero
     T2CONbits.TCKPS = 0b11; // 1:256 prescale
-    PR2 = 65535; // period of ~1.05 seconds
+    double periodSeconds = 1/( freq * 2); //period in seconds
+    long int periodCycles = (periodSeconds/( (double) 62.5E-9 * 256.0)) - 1;//period in cycles
+    if(periodCycles > 65535){
+        periodCycles == 65535;
+    }
+    PR2 = periodCycles; // period
     
     /** Map output compare 1 register to pin RP14 via PPS */
     
@@ -65,4 +76,14 @@ void turnOffAlarm() {
     OC1CON = 0; // Reset OC1 register
     T2CONbits.TON = 0;
     LATBbits.LATB14 = 0;
+}
+
+int main(){
+    double frequency = 30; //.4768444343 is minimum
+    initAlarm(frequency);
+    turnOnAlarm();
+    while(1){
+        
+        
+    }
 }
