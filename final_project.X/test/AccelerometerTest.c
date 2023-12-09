@@ -73,35 +73,7 @@ int main(void) {
     initNeopixel();
     initAccelerometer();
     initPushButton();
-    delay_ms(100);
-    accel_write(CTRL_REG5, 0b10000000); // reboot memory content
-    delay_ms(100);
-    accel_write(CTRL_REG5, 0x00);
-    delay_ms(100);
-    
-    // Initialize LIS3DH
-    if(accel_read(WHO_AM_I) != 0x33) {
-        return 1; // Something is wrong!
-    }
 
-//    accel_write(CTRL_REG1, 0b01110111); // 400Hz, Normal, ZYX axis enabled
-//    accel_write(CTRL_REG4, 0b10111000); // block data not updated until MSB
-//    accel_write(CTRL_REG5, 0b01000000); // FIFO enable
-    
-    accel_write(CTRL_REG1, 0x77);
-    accel_write(CTRL_REG2, 0x01);
-    accel_write(CTRL_REG3, 0x40);
-    accel_write(CTRL_REG4, 0x84);
-    accel_write(INT1_THS, 0x20);
-    accel_write(INT1_CFG, 0x2A);
-    // and LSB reating, 16g scale selection, high resolution output mode
-    
-//    // Verify correct register values
-//    volatile int reg1setting = accel_read(CTRL_REG1); // 0b01110111
-//    volatile int reg2setting = accel_read(CTRL_REG2); // default
-//    volatile int reg3setting = accel_read(CTRL_REG3); // default
-//    volatile int reg4setting = accel_read(CTRL_REG4); // 0b10111000
-//    volatile int y = 1;
     loop();
     return 0;
 }
@@ -123,16 +95,5 @@ void loop() {
             alarmOn = 0;
             blinkRed();
         }
-    }
-}
-
-/**
- * @param ms the amount of time (in milliseconds) to delay the PIC24 on a 16MHz
- * instruction clock
- */
-void delay_ms(unsigned int ms) {
-    while (ms-- > 0) {
-        asm("repeat #15998");
-        asm("nop");
     }
 }
