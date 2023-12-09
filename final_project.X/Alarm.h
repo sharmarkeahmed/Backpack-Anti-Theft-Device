@@ -23,6 +23,10 @@ extern "C" {
 /**
  * Initializes pin RP14 as output for the piezoelectric buzzer, as well as 
  * the output compare register and Timer2 used to send pulses to the buzzer.
+ * 
+ * @param freq the minimum frequency allowed is 0.4768444343 Hz, anything lower
+ * than this will overflow the period. The frequency at which that alarm beeps 
+ * can be altered by the user
  */
 void initAlarm(double freq);
 
