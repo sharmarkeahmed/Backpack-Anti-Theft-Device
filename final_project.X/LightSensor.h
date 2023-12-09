@@ -1,8 +1,13 @@
-/* 
- * File:   LightSensor.h
- * Author: Ryan Fowler, Sharmarke Ahmed
+/*
+ * File:   LightSensor.c
+ * Author: Ryan Fowler
+ * The Light Sensor library uses a light sensor that changes its resistance
+ * based on how much light it detects. It is used in a voltage divider with
+ * a 4.7 k ohm resistor and the voltage is read using a peripheral pin on the
+ * microcontroller. This value is analog so an analog to digital converter
+ * converts it into a voltage. Compatible with 3.0 V and 3.3 V sources
  *
- * Created on December 8, 2023, 1:55 PM
+ * Created on December 1, 2023, 11:35 AM
  */
 
 #ifndef LIGHTSENSOR_H
