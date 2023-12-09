@@ -1,17 +1,16 @@
 /*
- * File:   PushButton.h
+ * File:   PushButton.c
  * Author: Sharmarke Ahmed
  * The PushButton library can be used to detect a button press on a button 
  * connected to pin RP15 on the PIC24FJ64GA002. Pin RP15 should be connected
  * to a switch which completes a circuit to ground when pressed. An internal
  * pull up resistor is connected to pin RP15 when initialized. The button should
- * be connected to ground and complete the circuit when pressed. Although
- * debouncing software is provided by the code, it is recommended that a RC
- * low filter circuit is used in connecting to pin RP15 to minimize the effect
- * of noise on button pressed and avoid button presses being registered twice.
- * The library uses the input capture 1 register and Timer2. Ensure these 
- * modules are not being used elsewhere.
- * 
+ * be connected to ground and complete the circuit when pressed. A low pass
+ * filter must be connected to pin RP15 to filter out high frequency noise
+ * caused by a switch bounce. This library uses the change notification
+ * interrupt on the PIC24.
+ * Created on November 22, 2023, 7:18 PM
+ *
  * Created on November 22, 2023, 8:45 PM
  */
 
@@ -24,8 +23,8 @@ extern "C" {
 
 /**
  * Initialize pin RP15 in detecting button presses. The function will initialize
- * Timer2 to be used with the Input Capture 1 register, and enable a pull up
- * resistor on pin RP15.
+ * the change notification interrupt for the pin and the internal pull-up
+ * resistor for it.
  */
 void initPushButton();
 

@@ -12,7 +12,7 @@ volatile int buffer_index = 0;
 volatile float adcval = 0;
 
 void delay_ms(unsigned long int ms);
-void adc_init();
+void initLightSensor();
 void initBuffer();
 void putVal(int ADCvalue);
 int getAvg();
@@ -26,7 +26,7 @@ void delay_ms(unsigned long int ms){
     }
 }
 
-void adc_init(){ // initializes ADC and assigns it to timer 3, no arguments, no return values
+void initLightSensor(){ // initializes ADC and assigns it to timer 3, no arguments, no return values
     _RCDIV = 0;
     TRISAbits.TRISA0 = 1;
     

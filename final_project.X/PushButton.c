@@ -5,12 +5,10 @@
  * connected to pin RP15 on the PIC24FJ64GA002. Pin RP15 should be connected
  * to a switch which completes a circuit to ground when pressed. An internal
  * pull up resistor is connected to pin RP15 when initialized. The button should
- * be connected to ground and complete the circuit when pressed. Although
- * debouncing software is provided by the code, it is recommended that a RC
- * low filter circuit is used in connecting to pin RP15 to minimize the effect
- * of noise on button pressed and avoid button presses being registered twice.
- * The library uses the input capture 1 register and Timer2. Ensure these
- * modules are not being used elsewhere.
+ * be connected to ground and complete the circuit when pressed. A low pass
+ * filter must be connected to pin RP15 to filter out high frequency noise
+ * caused by a switch bounce. This library uses the change notification
+ * interrupt on the PIC24.
  * Created on November 22, 2023, 7:18 PM
  */
 
@@ -21,17 +19,13 @@
 
 void initPushButton();
 int isButtonPressed();
-volatile uint32_t overflowTMR2 = 0; // 32 bit type to ensure that overflow is large enough
-// to count timer overflows even if the PIC24 is on for a very long time
-volatile uint32_t currentEventTime = 0;
-volatile uint32_t lastEventTime = 0;
 
 volatile int buttonPress = 0;
 
 /**
  * Initialize pin RP15 in detecting button presses. The function will initialize
- * Timer2 to be used with the Input Capture 1 register, and enable a pull up
- * resistor on pin RP15.
+ * the change notification interrupt for the pin and the internal pull-up
+ * resistor for it.
  */
 void initPushButton() {
     buttonPress = 0;
@@ -44,8 +38,6 @@ void initPushButton() {
     CNEN1bits.CN11IE = 1; // Enable change notification interrupt for pin RP15
     IEC1bits.CNIE = 1; // Interrupt request enable for change notification
     IFS1bits.CNIF = 0; // Reset interrupt flag for change notificiation
-    
-    overflowTMR2 = 0; // reset overflows for TMR2
 }
 
 /**

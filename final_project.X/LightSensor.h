@@ -1,5 +1,5 @@
 /* 
- * File:   lightSensor.h
+ * File:   LightSensor.h
  * Author: Ryan Fowler, Sharmarke Ahmed
  *
  * Created on December 8, 2023, 1:55 PM
@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-void adc_init();
+void initLightSensor();
 int lightDetected();
 
 #ifdef	__cplusplus
@@ -20,4 +20,3 @@ int lightDetected();
 #endif
 
 #endif	/* LIGHTSENSOR_H */
-
