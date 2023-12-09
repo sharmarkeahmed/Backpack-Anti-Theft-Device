@@ -12,7 +12,11 @@
 extern "C" {
 #endif
 
+/**
+ * Initializes light sensor pin as well as setting up AD conversion
+ */
 void initLightSensor();
+
 /**
  * checks if light detected is above the voltage threshold needed to set off alarm (2.5 V)
  */
