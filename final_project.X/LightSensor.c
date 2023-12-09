@@ -1,6 +1,6 @@
 /*
  * File:   LightSensor.c
- * Author: Ryan Fowler
+ * Author: Ryan Fowler, Sharmarke Ahmed
  * The Light Sensor library uses a light sensor that changes its resistance
  * based on how much light it detects. It is used in a voltage divider with
  * a 4.7 k ohm resistor and the voltage is read using a peripheral pin on the
