@@ -41,36 +41,11 @@ void initPushButton() {
     
     CNPU1bits.CN11PUE = 1; // Turn on pull up resistor for pin RP15 (note that
     // RP15 corresponds to CN11)
+    CNEN1bits.CN11IE = 1; // Enable change notification interrupt for pin RP15
+    IEC1bits.CNIE = 1; // Interrupt request enable for change notification
+    IFS1bits.CNIF = 0; // Reset interrupt flag for change notificiation
     
     overflowTMR2 = 0; // reset overflows for TMR2
-    
-    /** Initialize Timer2 to have a period of 1 second*/
-    T2CON = 0; // initially ensure that T2CON register and TMR2 is zero
-    TMR2 = 0;
-    T2CONbits.TCKPS = 0b11; // 1:256 prescale
-    PR2 = 65535; // maximum period = 2^16 - 1, equivalent to a 
-    // 1.04856 second period
-    
-    /**Configure Timer2 Interrupts*/
-    IEC0bits.T2IE = 1; // Enable TMR2 Interrupt
-    IFS0bits.T2IF = 0; // Disable TMR2 Interrupt flag
-    
-    /** Set up Input Capture **/
-    IC1CON = 0; // Turn off/reset IC1 register
-    IC1CONbits.ICTMR = 1; // Use Timer 2 for capture source
-    IC1CONbits.ICM = 0b010; // Capture every falling edge
-    
-    /** Configure pin RB8 for IC1*/
-    __builtin_write_OSCCONL(OSCCON & 0xBF); // unlock PPS
-    RPINR7bits.IC1R = 15; // Configure pin RP15 to IC1
-    __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
-    
-    /** Configure Input Capture 1 Interrupts*/
-    IEC0bits.IC1IE = 1; // Enable IC1 interrupt
-    IFS0bits.IC1IF = 0; // Reset interrupt flag
-    
-    T2CONbits.TON = 1; // Turn on TMR2.
-    
 }
 
 /**
@@ -88,28 +63,9 @@ int isButtonPressed() {
     }
 }
 
-/**
- * The input capture 1 interrupt ISR will occur each time a falling
- * edge of pin RB15 is detected.
- */
-void __attribute__((__interrupt__, __auto_psv__)) _IC1Interrupt() {
-    currentEventTime = IC1BUF + overflowTMR2 * 65535;
-    if( ( currentEventTime - lastEventTime ) > 124) { // 2ms debounce duration
-        
-        // Button was pressed
-        lastEventTime = currentEventTime;
+void __attribute__((__interrupt__,__auto_psv__)) _CNInterrupt(void) {
+    IFS1bits.CNIF = 0;
+    if(PORTBbits.RB15 == 0) {
         buttonPress = 1;
     }
-    _IC1IF = 0; // reset IC1 interrupt flag to zero
-    return;
-}
-
-/**
- * ISR occurs during each rollover of Timer2, and will increment the overflow
- * variable
- */
-void __attribute__ ((__interrupt__, __auto_psv__)) _T2Interrupt() {
-    overflowTMR2++;
-    IFS0bits.T2IF = 0; // Disable TMR2 Interrupt flag
-    return;
 }

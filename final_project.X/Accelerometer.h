@@ -26,4 +26,3 @@ int movementDetected();
 #endif
 
 #endif	/* ACCELEROMETER_H */
-

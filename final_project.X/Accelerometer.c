@@ -46,6 +46,7 @@ int getXAcceleration();
 int getYAcceleration();
 int getZAcceleration();
 int movementDetected();
+void delay_ms_accel(unsigned int ms);
 
 void initAccelerometer() {
     CLKDIVbits.RCDIV = 0; // 16MHz instruction clock
@@ -62,11 +63,11 @@ void initAccelerometer() {
     I2C1CONbits.I2CEN = 1; // Turn on I2C
     
     // Send commands to initialize the LIS3DH. Refer to P.13 of manual
-    delay_ms(100);
+    delay_ms_accel(100);
     accel_write(CTRL_REG5, 0b10000000); // reboot memory content
-    delay_ms(100);
+    delay_ms_accel(100);
     accel_write(CTRL_REG5, 0x00);
-    delay_ms(100);
+    delay_ms_accel(100);
     accel_write(CTRL_REG1, 0x77);
     accel_write(CTRL_REG2, 0x01);
     accel_write(CTRL_REG3, 0x40);
@@ -149,4 +150,14 @@ int movementDetected() {
         return 1;
     }
     return 0;
+}
+
+/**
+ * @param ms time to delay (in ms)
+ */
+void delay_ms_accel(unsigned int ms) {
+    while (ms-- > 0) {
+        asm("repeat #15998");
+        asm("nop");
+    }
 }

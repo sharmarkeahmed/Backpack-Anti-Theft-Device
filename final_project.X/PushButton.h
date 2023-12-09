@@ -42,4 +42,3 @@ int isButtonPressed();
 #endif
 
 #endif	/* PUSHBUTTON_H */
-
