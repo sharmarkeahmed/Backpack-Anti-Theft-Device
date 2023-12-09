@@ -77,13 +77,3 @@ void turnOffAlarm() {
     T2CONbits.TON = 0;
     LATBbits.LATB14 = 0;
 }
-
-int main(){
-    double frequency = 30; //.4768444343 is minimum
-    initAlarm(frequency);
-    turnOnAlarm();
-    while(1){
-        
-        
-    }
-}
