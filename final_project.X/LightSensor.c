@@ -44,7 +44,6 @@ void delay_ms(unsigned long int ms){
 
 /**
  * Initializes light sensor pin as well as setting up AD conversion
- * 
  */
 
 void initLightSensor(){ // initializes ADC and assigns it to timer 3, no arguments, no return values
@@ -85,7 +84,6 @@ void initBuffer(){ //initializes buffer to size of 10, no arguments, no return v
 
 /**
  * Takes the value from the buffer and puts it in the array.
- * 
  */
 
 void putVal(int ADCvalue){ //Fills buffer with ADC values, the ADC value is the argument, no return values
@@ -97,7 +95,6 @@ void putVal(int ADCvalue){ //Fills buffer with ADC values, the ADC value is the 
 
 /**
  * averages the values of the array.
- * 
  */
 
 int getAvg(){ // averages the values in the buffer, no arguments, no return values
@@ -113,7 +110,6 @@ int getAvg(){ // averages the values in the buffer, no arguments, no return valu
 
 /**
  * waits until buffer is full and puts value in array.
- * 
  */
 void __attribute__((__interrupt__, __auto_psv__)) _ADC1Interrupt(){ //everytime buffer is full it puts the value in the buffer
     _AD1IF = 0;
@@ -122,7 +118,6 @@ void __attribute__((__interrupt__, __auto_psv__)) _ADC1Interrupt(){ //everytime 
 
 /**
  * checks if light detected is above the voltage threshold needed to set off alarm (2.5 V)
- * 
  */
 
 int lightDetected(){
