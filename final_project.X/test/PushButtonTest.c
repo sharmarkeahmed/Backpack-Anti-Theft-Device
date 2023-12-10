@@ -1,5 +1,5 @@
 /*
- * File:   pushButtonTest.c
+ * File:   PushButtonTest.c
  * Author: Sharmarke Ahmed
  * This code was used to verify operation of the PushButton library for
  * determining button presses to change the mode of the PIC24
