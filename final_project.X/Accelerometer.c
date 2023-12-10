@@ -146,7 +146,13 @@ int getZAcceleration() {
  * @return 1 if the accelerometer detected movement, otherwise return 0
  */
 int movementDetected() {
-    if(getZAcceleration() > 30000) {
+    if(getZAcceleration() > 15000) {
+        return 1;
+    }
+    else if(getYAcceleration() > 15000) {
+        return 1;
+    }
+    else if(getZAcceleration() > 15000) {
         return 1;
     }
     return 0;
