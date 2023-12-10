@@ -23,13 +23,17 @@
                                        // Fail-Safe Clock Monitor is enabled)
 #pragma config FNOSC = FRCPLL      // Oscillator Select (Fast RC Oscillator with PLL module (FRCPLL))
 
-volatile uint64_t overflowTMR4 = 0;
-volatile uint64_t time1 = 0;
-volatile uint64_t time2 = 0;
+
+// The device can only run for a maximum of ~19 hours with a 32 bit timer. Use
+// 64-bit values for very long term applications
+volatile uint32_t overflowTMR4 = 0;
+volatile uint32_t time1 = 0;
+volatile uint32_t time2 = 0;
 
 
 void setup();
 void loop();
+void __attribute__((__interrupt__, __auto_psv__)) _T4Interrupt();
 
 
 
@@ -41,7 +45,7 @@ int main(){
 }
 
 void setup() {
-    initAlarm();
+    initAlarm(10);
     initAccelerometer();
     initNeopixel();
     initPushButton();
@@ -61,42 +65,61 @@ void setup() {
 }
 
 void loop() {
-    int exit = 0;
+    int exitMechanism = 0;
     while(1) {
         if(isButtonPressed()) { // Turn on security mechanism
             blinkGreen();
             time1 = TMR4 + overflowTMR4 * 65535;
             time2 = time1;
-            uint64_t difference = time2 - time1;
-            uint64_t sevenSecondsInCycles = 65535*7;
-            while( difference < sevenSecondsInCycles && !exit) { // wait 7 seconds for person to store
+            uint32_t difference = time2 - time1;
+            while( difference < (uint32_t) (65535 * 7) && !exitMechanism) { // wait 7 seconds for person to store
                 // device before actually turning on security mechanism
                 time2 = TMR4 + overflowTMR4 * 65535;
                 difference = time2 - time1;
                 if(isButtonPressed()) {
-                    exit = 1;
-//                    blinkRed();
+                    exitMechanism = 1;
                 }
             }
-            if(!exit) {
-                while(!exit) {
+            if(!exitMechanism) {
+                while(!exitMechanism) {
                     if(isButtonPressed()) {
-                        exit = 1;
-//                        blinkRed();
-//                        turnOffAlarm();
+                        exitMechanism = 1;
                     }
                     if(movementDetected() || lightDetected()) {
-                        turnOnAlarm();
+                        time1 = TMR4 + overflowTMR4 * 65535;
+                        time2 = time1;
+                        difference = time2 - time1;
+                        while( difference < (uint32_t) (65535 * 4) && !exitMechanism) { // wait 7 seconds for person to store
+                            // device before actually turning on security mechanism
+                            time2 = TMR4 + overflowTMR4 * 65535;
+                            difference = time2 - time1;
+                            if(isButtonPressed()) {
+                                exitMechanism = 1;
+                            }
+                        }
+                        
+                        if(!exitMechanism) {
+                            turnOnAlarm();
+                            while(!exitMechanism) {
+                                if(isButtonPressed()) {
+                                    exitMechanism = 1;
+                                }
+                            }
+                        }
                     }
                 }
             }
-            exit = 0;
+            exitMechanism = 0;
             blinkRed();
             turnOffAlarm();
         }
     }
 }
 
+/**
+ * Interrupts on TMR4 overflow, incrementing the global variable to keep
+ * track of how mnay times TMR4 has overflowed
+ */
 void __attribute__((__interrupt__, __auto_psv__)) _T4Interrupt() {
     overflowTMR4++;
     _T4IF = 0; // Reset TImer4 interrupt flag
