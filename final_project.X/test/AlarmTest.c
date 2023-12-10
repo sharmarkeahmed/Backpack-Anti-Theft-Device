@@ -43,7 +43,7 @@ int main(void) {
 }
 
 void setup() {
-    initAlarm();
+    initAlarm(10);
     initPushButton();
     initNeopixel();
 }
