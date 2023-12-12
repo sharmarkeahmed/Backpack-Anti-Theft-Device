@@ -8,7 +8,9 @@
  * be connected to ground and complete the circuit when pressed. A low pass
  * filter must be connected to pin RP15 to filter out high frequency noise
  * caused by a switch bounce. This library uses the change notification
- * interrupt on the PIC24.
+ * interrupt on the PIC24. To use this library, first initialize the PushButton
+ * using the initPushButton() function. Then, call the isButtonPressed() function
+ * when wanting to determine whether the button was pressed.
  * Created on November 22, 2023, 7:18 PM
  */
 
