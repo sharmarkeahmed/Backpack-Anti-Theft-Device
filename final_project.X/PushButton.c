@@ -3,7 +3,7 @@
  * Author: Sharmarke Ahmed
  * The PushButton library can be used to detect a button press on a button 
  * connected to pin RP15 on the PIC24FJ64GA002. Pin RP15 should be connected
- * to a switch which completes a circuit to ground when pressed. An internal
+ * to a push button switch which completes a circuit to ground when pressed. An internal
  * pull up resistor is connected to pin RP15 when initialized. The button should
  * be connected to ground and complete the circuit when pressed. A low pass
  * filter must be connected to pin RP15 to filter out high frequency noise
