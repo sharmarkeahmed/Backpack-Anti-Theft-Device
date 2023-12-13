@@ -1,6 +1,15 @@
 /*
  * File:   Accelerometer.c
  * Author: Sharmarke Ahmed
+ * The Accelerometer library contains an assortment of functions to communicate
+ * and gain acceleration values from the LIS3DH accelerometer using a
+ * PIC24FJ64GA002 accelerometer. The library uses the I2C1 module of the
+ * microcontroller. Ensure that this module is not being used elsewhere.
+ * To use this library, connect the SDA1/SCL1 pins of the microcontroller to the
+ * SDA/SCL pins of the LIS3DH. Connect the SDO pin of the LIS3DH to ground, and
+ * the CS pin of the LIS3DH to Vdd. Connect both pins to a 10kΩ pull up resistor.
+ * Initialize the accelerometer with the initAccelerometer() function before 
+ * using other functions.
  *
  * Created on November 24, 2023, 2:00 AM
  */
@@ -48,6 +57,10 @@ int getZAcceleration();
 int movementDetected();
 void delay_ms_accel(unsigned int ms);
 
+/**
+ * Initializes the accelerometer by initializing the I2C1 module of the
+ * microcontroller, and sending commands to initialize the LIS3DH.
+ */
 void initAccelerometer() {
     CLKDIVbits.RCDIV = 0; // 16MHz instruction clock
     // Note: SDA1/SCL1 are not analog pins; don't need to set to digital mode
@@ -76,6 +89,13 @@ void initAccelerometer() {
     accel_write(INT1_CFG, 0x2A);
 }
 
+/**
+ * @param address the register in the LIS3DH to read. Refer to Section 7 -
+ * Register Mapping (p. 31) of the LIS3DH datasheet manual for specific register
+ * addresses.
+ * @return 8-bit value corresponding to the value read from the input address
+ * register of the LIS3DH
+ */
 int accel_read(uint8_t address) {
     I2C1CONbits.SEN = 1; // initialize start condition
     while(I2C1CONbits.SEN == 1); // wait for start bit to be sent
@@ -106,6 +126,12 @@ int accel_read(uint8_t address) {
     return retVal;
 }
 
+/**
+ * @param address the register in the LIS3DH to write. Refer to Section 7 -
+ * Register Mapping (p. 31) of the LIS3DH datasheet manual for specific register
+ * addresses.
+ * @param data 8-bit value to write in the specified register address
+ */
 void accel_write(uint8_t address, uint8_t data) {
     I2C1CONbits.SEN = 1; // initialize start condition
     while(I2C1CONbits.SEN == 1); // wait for start bit to be sent
@@ -124,18 +150,27 @@ void accel_write(uint8_t address, uint8_t data) {
     while(I2C1CONbits.PEN == 1); // wait for stop bit to be sent
 }
 
+/**
+ * @return x-axis acceleration measured by the sensor
+ */
 int getXAcceleration() {
     int x = accel_read(OUT_X_H) << 8;
     x |= accel_read(OUT_X_L);
     return x;
 }
 
+/**
+ * @return  y-axis acceleration measured by the sensor
+ */
 int getYAcceleration() {
     int y = accel_read(OUT_Y_H) << 8;
     y |= accel_read(OUT_Y_L);
     return y;
 }
 
+/**
+ * @return z-axis acceleration measured by the sensorl
+ */
 int getZAcceleration() {
     int z = accel_read(OUT_Z_H) << 8;
     z |= accel_read(OUT_Z_L);
@@ -143,6 +178,8 @@ int getZAcceleration() {
 }
 
 /**
+ * The function will detect movement by seeing if the x, y, or z-accelerations 
+ * goes above a certain threshold.
  * @return 1 if the accelerometer detected movement, otherwise return 0
  */
 int movementDetected() {
