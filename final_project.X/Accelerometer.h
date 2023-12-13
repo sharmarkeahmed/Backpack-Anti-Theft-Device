@@ -36,7 +36,7 @@ void initAccelerometer();
  * @return 8-bit value corresponding to the value read from the input address
  * register of the LIS3DH
  */
-int accel_read(uint8_t address);
+uint8_t accel_read(uint8_t address);
 
 /**
  * @param address the register in the LIS3DH to write. Refer to Section 7 -
