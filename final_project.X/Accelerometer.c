@@ -49,7 +49,7 @@
 
 // Function declarations
 void initAccelerometer();
-int accel_read(uint8_t address);
+uint8_t accel_read(uint8_t address);
 void accel_write(uint8_t address, uint8_t data);
 int getXAcceleration();
 int getYAcceleration();
@@ -96,7 +96,7 @@ void initAccelerometer() {
  * @return 8-bit value corresponding to the value read from the input address
  * register of the LIS3DH
  */
-int accel_read(uint8_t address) {
+uint8_t accel_read(uint8_t address) {
     I2C1CONbits.SEN = 1; // initialize start condition
     while(I2C1CONbits.SEN == 1); // wait for start bit to be sent
     IFS1bits.MI2C1IF = 0; // Clear interrupt flag
