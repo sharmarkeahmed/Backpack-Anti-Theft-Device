@@ -1,5 +1,5 @@
 /*
- * File:   Accelerometer.c
+ * File:   Accelerometer.h
  * Author: Sharmarke Ahmed
  * The Accelerometer library contains an assortment of functions to communicate
  * and gain acceleration values from the LIS3DH accelerometer using a
