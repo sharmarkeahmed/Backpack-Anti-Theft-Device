@@ -1,5 +1,5 @@
 /*
- * File:   Alarm.c
+ * File:   Alarm.h
  * Author: Sharmarke Ahmed
  * The Alarm library is used to control a piezoelectric buzzer which generates a
  * continuous sound when connected to 3.3V on pin RP14 on the PIC24FJ64GA002.
