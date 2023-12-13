@@ -169,7 +169,7 @@ int getYAcceleration() {
 }
 
 /**
- * @return z-axis acceleration measured by the sensorl
+ * @return z-axis acceleration measured by the sensor
  */
 int getZAcceleration() {
     int z = accel_read(OUT_Z_H) << 8;
