@@ -7,7 +7,7 @@
  * microcontroller. Ensure that this module is not being used elsewhere.
  * To use this library, connect the SDA1/SCL1 pins of the microcontroller to the
  * SDA/SCL pins of the LIS3DH. Connect the SDO pin of the LIS3DH to ground, and
- * the CS pin of the LIS3DH to Vdd. Connect both pins to a 10kΩ pull up resistor.
+ * the CS pin of the LIS3DH to Vdd. Connect both pins to a 10k? pull up resistor.
  * Initialize the accelerometer with the initAccelerometer() function before 
  * using other functions.
  *
@@ -46,10 +46,11 @@
 #define FIFO_SRC_REG 0x2F
 #define INT1_THS 0x32
 #define INT1_CFG 0x38
+#define DEVICE_ADDRESS 0x30
 
 // Function declarations
 void initAccelerometer();
-uint8_t accel_read(uint8_t address);
+int accel_read(uint8_t address);
 void accel_write(uint8_t address, uint8_t data);
 int getXAcceleration();
 int getYAcceleration();
@@ -96,25 +97,25 @@ void initAccelerometer() {
  * @return 8-bit value corresponding to the value read from the input address
  * register of the LIS3DH
  */
-uint8_t accel_read(uint8_t address) {
+int accel_read(uint8_t address) {
     I2C1CONbits.SEN = 1; // initialize start condition
     while(I2C1CONbits.SEN == 1); // wait for start bit to be sent
     IFS1bits.MI2C1IF = 0; // Clear interrupt flag
-    I2C1TRN = 0b00110000; // 8 bits. consists of slave address (0b00110001) and
-    // the last bit for R/W
+    I2C1TRN = DEVICE_ADDRESS; // 8 bits. consists of slave address (0b00110001) and
+    // the last bit for writing (0)
     while(IFS1bits.MI2C1IF == 0); // wait for interrupt flag
     IFS1bits.MI2C1IF = 0;
     I2C1TRN = address; // data register byte
     while(IFS1bits.MI2C1IF == 0); // wait for interrupt flag
     IFS1bits.MI2C1IF = 0;
-    I2C1TRN = 0b00110001; // 8 bits. consists of slave address (0b00110001) and
-    // the last bit for R/W
+    I2C1TRN = DEVICE_ADDRESS | 0x01; // 8 bits. consists of slave address (0b00110001) and
+    // the last bit for reading (1)
     while(IFS1bits.MI2C1IF == 0); // wait for interrupt flag
     I2C1CONbits.SEN = 1; // initialize start condition
     while(I2C1CONbits.SEN == 1); // wait for start bit to be sent
     IFS1bits.MI2C1IF = 0; // Clear interrupt flag
-    I2C1TRN = 0b00110001; // 8 bits. consists of slave address (0b00110001) and
-    // the last bit for R/W
+    I2C1TRN = DEVICE_ADDRESS | 0x01; // 8 bits. consists of slave address (0b00110001) and
+    // the last bit for reading (1)
     while(IFS1bits.MI2C1IF == 0); // wait for interrupt flag
     I2C1CONbits.RCEN = 1; // Enable receive mode
     while(I2C1STATbits.RBF == 0); // wait for interrupt flag
@@ -136,8 +137,8 @@ void accel_write(uint8_t address, uint8_t data) {
     I2C1CONbits.SEN = 1; // initialize start condition
     while(I2C1CONbits.SEN == 1); // wait for start bit to be sent
     IFS1bits.MI2C1IF = 0; // Clear interrupt flag
-    I2C1TRN = 0b00110000; // 8 bits. consists of slave address (0b00110001) and
-    // the last bit for R/W
+    I2C1TRN = DEVICE_ADDRESS; // 8 bits. consists of slave address (0b00110001) and
+    // the last bit for write (0)
     while(IFS1bits.MI2C1IF == 0); // wait for interrupt flag
     IFS1bits.MI2C1IF = 0;
     I2C1TRN = address; // data register byte
@@ -169,7 +170,7 @@ int getYAcceleration() {
 }
 
 /**
- * @return z-axis acceleration measured by the sensor
+ * @return z-axis acceleration measured by the sensorl
  */
 int getZAcceleration() {
     int z = accel_read(OUT_Z_H) << 8;
