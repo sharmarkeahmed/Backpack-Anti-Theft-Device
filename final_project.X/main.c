@@ -65,10 +65,11 @@ void setup() {
 }
 
 void loop() {
-    int exitMechanism = 0;
+    int exitMechanism = 0; // variable to track whether or not the user wishes
+    // to turn off the anti theft mechanism after the device is turned on
     while(1) {
         if(isButtonPressed()) { // Turn on security mechanism
-            blinkGreen();
+            blinkGreen(); // indicate mechanism is ON
             time1 = TMR4 + overflowTMR4 * 65535;
             time2 = time1;
             uint32_t difference = time2 - time1;
@@ -76,21 +77,26 @@ void loop() {
                 // device before actually turning on security mechanism
                 time2 = TMR4 + overflowTMR4 * 65535;
                 difference = time2 - time1;
-                if(isButtonPressed()) {
+                if(isButtonPressed()) { // Turn off device
                     exitMechanism = 1;
                 }
             }
-            if(!exitMechanism) {
+            if(!exitMechanism) { // Turn on security mechanism
                 while(!exitMechanism) {
-                    if(isButtonPressed()) {
+                    if(isButtonPressed()) { // Check if user wants to turn off
+                        // the device
                         exitMechanism = 1;
                     }
                     if(movementDetected() || lightDetected()) {
+                        // wait 4 seconds, make sure the owner of the backpack
+                        // is not about to turn off the device first
                         time1 = TMR4 + overflowTMR4 * 65535;
                         time2 = time1;
                         difference = time2 - time1;
-                        while( difference < (uint32_t) (65535 * 4) && !exitMechanism) { // wait 7 seconds for person to store
-                            // device before actually turning on security mechanism
+                        while( difference < (uint32_t) (65535 * 4) && !exitMechanism) { 
+                            // wait 4 seconds, make sure the owner of the 
+                            // backpack is not about to turn off the device 
+                            // first
                             time2 = TMR4 + overflowTMR4 * 65535;
                             difference = time2 - time1;
                             if(isButtonPressed()) {
@@ -98,19 +104,21 @@ void loop() {
                             }
                         }
                         
-                        if(!exitMechanism) {
+                        if(!exitMechanism) { // 4-second waiting period
+                            // ended, turn on alarm, backpack is stolen!
                             turnOnAlarm();
                             while(!exitMechanism) {
-                                if(isButtonPressed()) {
+                                if(isButtonPressed()) { // alarm will
+                                    // continue to play until button is pressed
                                     exitMechanism = 1;
                                 }
                             }
                         }
                     }
                 }
-            }
+            } // turn off device
             exitMechanism = 0;
-            blinkRed();
+            blinkRed(); // indicate mechanism is OFF
             turnOffAlarm();
         }
     }
@@ -118,7 +126,7 @@ void loop() {
 
 /**
  * Interrupts on TMR4 overflow, incrementing the global variable to keep
- * track of how mnay times TMR4 has overflowed
+ * track of how many times TMR4 has overflowed
  */
 void __attribute__((__interrupt__, __auto_psv__)) _T4Interrupt() {
     overflowTMR4++;
