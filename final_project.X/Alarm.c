@@ -42,7 +42,7 @@ void initAlarm(double freq) {
     double periodSeconds = 1/( freq * 2); //period in seconds
     long int periodCycles = (periodSeconds/( (double) 62.5E-9 * 256.0)) - 1;//period in cycles
     if(periodCycles > 65535){
-        periodCycles == 65535;
+        periodCycles = 65535;
     }
     PR2 = periodCycles; // period
     
