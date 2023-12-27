@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-  <executable name="dist/default/production/final_project.X.production.elf">
+  <executable name="dist/default/production/Backpack-Anti-Theft-Device.X.production.elf">
     <memory name="data">
       <units>bytes</units>
       <length>8192</length>
-      <used>6</used>
-      <free>8186</free>
+      <used>48</used>
+      <free>8144</free>
     </memory>
     <memory name="program">
       <units>bytes</units>
       <length>65274</length>
-      <used>1455</used>
-      <free>63819</free>
+      <used>6936</used>
+      <free>58338</free>
     </memory>
   </executable>
 </project>

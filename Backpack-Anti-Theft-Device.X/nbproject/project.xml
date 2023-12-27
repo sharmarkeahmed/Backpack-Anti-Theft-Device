@@ -3,12 +3,14 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>final_project</name>
-            <creation-uuid>b0314f53-0fb0-4456-aeff-c73edbc7e797</creation-uuid>
+            <name>Backpack-Anti-Theft-Device</name>
+            <creation-uuid>fec54b3d-fb91-4b70-8af4-06413b4dc705</creation-uuid>
             <make-project-type>0</make-project-type>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
-            <sourceRootList/>
+            <sourceRootList>
+                <sourceRootElem>.</sourceRootElem>
+            </sourceRootList>
             <confList>
                 <confElem>
                     <name>default</name>

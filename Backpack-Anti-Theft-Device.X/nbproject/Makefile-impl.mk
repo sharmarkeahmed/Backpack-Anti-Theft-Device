@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=final_project.X
+PROJECTNAME=Backpack-Anti-Theft-Device.X
 
 # Active Configuration
 DEFAULTCONF=default
