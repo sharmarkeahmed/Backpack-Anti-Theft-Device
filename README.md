@@ -36,6 +36,10 @@ x2 0.1µF capacitors
 
 x2 10µF capacitor
 
+x2 AA Batteries
+
+x1 2 Cell AA Battery Pack
+
 Additionally, when implementing this device for the first time, the [MPLAB® SNAP Debugger](https://www.microchip.com/en-us/development-tool/pg164100) is necessary to program the PIC24FJ64GA002 with the necessary software. 
 
 ## Required Software
