@@ -58,4 +58,4 @@ Note: the internal pull up resistor shown in the schematic is enabled via softwa
 5. Select "Make and Program Device Main Target" to program the PIC24JF64GA002 with the recently imported source code.
 
 # Additional Information
-For more information about how the specific libraries function, a .pdf file for each library documenting how to use the various public functions for each library is included in the documentation folder of this repository.
+For more information about how the specific libraries function, a .pdf file for each library documenting how to use the various public functions for each library is included in the documentation folder of this repository. A powerpoint presentation in the documentation folder, used to present this device for a course project, also goes in depth into how the device works.
